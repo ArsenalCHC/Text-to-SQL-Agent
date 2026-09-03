@@ -1,0 +1,130 @@
+# 电商日报智能问数 - 数据源配置
+#
+# field_map: 各平台「原生中文字段名」 -> 统一事实表 daily_metrics 字段
+#   这正是「为什么建表」：天猫称"本月金额"、京东称"月金额"、拼多多称"月金额"，
+#   归一化后 Agent 只面对一张字段统一的表，SQL 生成难度骤降。
+#
+# mock: true  -> 走本地模拟数据（mock_data.py），零网络依赖，适合离线演示 / 面试
+# mock: false -> 走真实 HTTP 接口（etl/sync.py 的 _fetch_http），接入生产数据
+#
+# 注意：以下 url 指向公司内网网关 10.21.0.176:8080，服务器须能访问该网段；
+#       若 git 上传仓库，本文件含内网 IP 与接口 UUID，需自行评估是否脱敏。
+mock: false
+date_format: "%Y%m%d"   # 接口日期参数格式（请求侧）；库内 date 列仍存 ISO "%Y-%m-%d"
+
+sources:
+  # ---------- 天猫 ----------
+  - name: tmall_category
+    platform: 天猫
+    dimension_type: category
+    url: http://10.21.0.176:8080/webroot/service/publish/1ba7e1bf-3b01-47ba-b26a-751bcdaf36ef/category
+    method: GET
+    params: [start_date, end_date]
+    field_map:
+      日期: date
+      产品线: product_line
+      品类: category
+      日金额: daily_amount
+      日数量: daily_qty
+      当月金额: month_amount      # 天猫品类称"当月金额"
+      当月数量: month_qty
+      当年金额: year_amount
+      当年数量: year_qty
+      当月目标: month_target
+      当年目标: year_target
+      月进度: month_progress
+      年进度: year_progress
+
+  - name: tmall_store
+    platform: 天猫
+    dimension_type: store
+    url: http://10.21.0.176:8080/webroot/service/publish/1ba7e1bf-3b01-47ba-b26a-751bcdaf36ef/zddp/daily
+    method: GET
+    params: [start_date, end_date]
+    field_map:
+      日期: date
+      店铺: store
+      日金额: daily_amount
+      本月金额: month_amount      # 天猫店铺称"本月金额"（注意与品类的"当月金额"不同）
+      本年金额: year_amount       # 天猫店铺称"本年金额"（无数量字段）
+      当月目标: month_target
+      当年目标: year_target
+      月进度: month_progress
+      年进度: year_progress
+
+  # ---------- 京东 ----------
+  - name: jd_category
+    platform: 京东
+    dimension_type: category
+    url: http://10.21.0.176:8080/webroot/service/publish/4dd35a51-7faf-47ec-a853-8d3bee9da2c4/jd/category
+    method: GET
+    params: [start_date, end_date]
+    field_map:
+      日期: date
+      产品线: product_line
+      品类: category
+      日金额: daily_amount
+      日数量: daily_qty
+      月金额: month_amount       # 京东品类称"月金额"（无当年金额/数量）
+      月数量: month_qty
+      月目标: month_target
+      年目标: year_target
+      月进度: month_progress
+      年进度: year_progress
+
+  - name: jd_store
+    platform: 京东
+    dimension_type: store
+    url: http://10.21.0.176:8080/webroot/service/publish/4dd35a51-7faf-47ec-a853-8d3bee9da2c4/jd/store
+    method: GET
+    params: [start_date, end_date]
+    field_map:
+      日期: date
+      店铺类型: store_type
+      店铺名称: store            # 京东店铺用"店铺名称"，且带"店铺类型"（自营/POP）
+      日金额: daily_amount
+      当月金额: month_amount
+      当年金额: year_amount
+      当月目标: month_target
+      当年目标: year_target
+      月进度: month_progress
+      年进度: year_progress
+
+  # ---------- 拼多多 ----------
+  - name: pdd_category
+    platform: 拼多多
+    dimension_type: category
+    url: http://10.21.0.176:8080/webroot/service/publish/c8eecf39-08be-4e96-9589-23e803a2ef55/pdd/category
+    method: GET
+    params: [start_date, end_date]
+    field_map:
+      日期: date
+      产品线: product_line
+      品类: category
+      日金额: daily_amount
+      日数量: daily_qty
+      月金额: month_amount       # 拼多多称"月金额"
+      月数量: month_qty
+      月目标: month_target
+      年金额: year_amount        # 拼多多称"年金额"
+      年数量: year_qty
+      年目标: year_target
+      月进度: month_progress
+      年进度: year_progress
+
+  - name: pdd_store
+    platform: 拼多多
+    dimension_type: store
+    url: http://10.21.0.176:8080/webroot/service/publish/c8eecf39-08be-4e96-9589-23e803a2ef55/pdd/zddp
+    method: GET
+    params: [start_date, end_date]
+    field_map:
+      日期: date
+      店铺: store
+      日金额: daily_amount
+      月金额: month_amount       # 拼多多店铺称"月金额"（无数量字段）
+      年金额: year_amount
+      月目标: month_target
+      年目标: year_target
+      月进度: month_progress
+      年进度: year_progress

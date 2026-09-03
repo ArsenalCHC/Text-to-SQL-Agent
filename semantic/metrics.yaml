@@ -1,0 +1,30 @@
+# 指标口径定义（固化，LLM 只能引用，不能自己发明公式）
+# 这是「防 GG」的第二道防线：把口径由人定，模型只填空。
+metrics:
+  - name: 月进度
+    sql_ref: month_progress
+    definition: 月金额 / 月目标
+    note: 已物化到字段，直接 SELECT，勿现场计算（避免除零 / 拼错）
+
+  - name: 年进度
+    sql_ref: year_progress
+    definition: 年金额 / 年目标
+    note: 已物化到字段，直接 SELECT
+
+  - name: 月金额
+    sql_ref: month_amount
+    definition: 当月累计销售额（天猫称"本月金额"，京东/拼多多称"月金额"）
+
+  - name: 年金额
+    sql_ref: year_amount
+    definition: 当年累计销售额（天猫称"当年金额"）
+
+  - name: 日金额
+    sql_ref: daily_amount
+    definition: 当日销售额
+
+  - name: 月目标
+    sql_ref: month_target
+
+  - name: 年目标
+    sql_ref: year_target

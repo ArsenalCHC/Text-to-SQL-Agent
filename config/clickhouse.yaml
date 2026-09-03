@@ -1,0 +1,19 @@
+# 智能问数 - ClickHouse 生产库配置（DWD 事实表 daily_metrics 落地）
+#
+# 用途：生产环境把数据归一化到 ClickHouse（列存 + MergeTree，适配 NL2SQL 聚合查询）。
+# 说明：SQLite 仍是 demo/离线默认后端；config/database.yaml 里 backend 切到 clickhouse 才生效。
+# 安全：账号密码建议用环境变量覆盖（CLICKHOUSE_USER / CLICKHOUSE_PASSWORD），避免明文入库/git。
+clickhouse:
+  host: 127.0.0.1        # 连公司现有集群时改成集群地址；环境变量 CLICKHOUSE_HOST 可覆盖
+  port: 8123             # HTTP 端口（clickhouse-connect 默认 8123）；HTTPS 集群常为 8443
+  username: default      # 环境变量 CLICKHOUSE_USER 可覆盖
+  password: ""           # 环境变量 CLICKHOUSE_PASSWORD 可覆盖（勿提交真实密码）
+  database: text2sql     # 独立库，与生产业务库物理隔离
+  secure: false          # true 时走 HTTPS
+  connect_timeout: 10
+
+# 表引擎与分区策略（面试可讲：按 date 月分区，重刷 = DROP PARTITION / ALTER DELETE 重灌）
+table:
+  engine: MergeTree
+  partition_by: toYYYYMM(date)          # 按月分区
+  order_by: [date, platform, dimension_type, category, store]  # 排序键 = 主键，决定索引与压缩

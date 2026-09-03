@@ -1,0 +1,22 @@
+# 业务术语 -> 字段/取值映射，用于理解用户口语
+terms:
+  - term: 血压计
+    maps_to: "category = '血压计'"
+  - term: 制氧机
+    maps_to: "category = '制氧机'"
+  - term: 血糖仪
+    maps_to: "category = '血糖仪'"
+  - term: 雾化器
+    maps_to: "category = '雾化器'"
+  - term: 鱼跃官方旗舰店
+    maps_to: "store = '鱼跃官方旗舰店'"
+  - term: 自营
+    maps_to: "store_type = '自营'"
+  - term: POP
+    maps_to: "store_type = 'POP'"
+  - term: 天猫
+    maps_to: "platform = '天猫'"
+  - term: 京东
+    maps_to: "platform = '京东'"
+  - term: 拼多多
+    maps_to: "platform = '拼多多'"

@@ -1,0 +1,52 @@
+[
+  {
+    "id": "q01",
+    "question": "天猫血压计本月进度是多少？",
+    "sql": "SELECT date, month_progress FROM v_category_daily WHERE platform='天猫' AND category='血压计' ORDER BY date DESC LIMIT 1;"
+  },
+  {
+    "id": "q02",
+    "question": "天猫制氧机的年进度是多少？",
+    "sql": "SELECT date, year_progress FROM v_category_daily WHERE platform='天猫' AND category='制氧机' ORDER BY date DESC LIMIT 1;"
+  },
+  {
+    "id": "q03",
+    "question": "京东和天猫的月销售额对比",
+    "sql": "SELECT platform, SUM(month_amount) AS month_amount FROM daily_metrics WHERE dimension_type='category' GROUP BY platform;"
+  },
+  {
+    "id": "q04",
+    "question": "各平台昨天的日销售额分别是多少？",
+    "sql": "SELECT platform, daily_amount FROM v_platform_summary WHERE date=(SELECT MAX(date) FROM daily_metrics);"
+  },
+  {
+    "id": "q05",
+    "question": "京东店铺自营和POP的月销售额分别是多少？",
+    "sql": "SELECT store_type, SUM(month_amount) AS month_amount FROM v_store_daily WHERE platform='京东' GROUP BY store_type;"
+  },
+  {
+    "id": "q06",
+    "question": "拼多多本月总销售额是多少？",
+    "sql": "SELECT SUM(month_amount) AS total_month_amount FROM daily_metrics WHERE platform='拼多多';"
+  },
+  {
+    "id": "q07",
+    "question": "天猫血糖仪本月销量是多少？",
+    "sql": "SELECT date, month_qty FROM v_category_daily WHERE platform='天猫' AND category='血糖仪' ORDER BY date DESC LIMIT 1;"
+  },
+  {
+    "id": "q08",
+    "question": "各平台月销售额从高到低排名",
+    "sql": "SELECT platform, SUM(month_amount) AS month_amount FROM daily_metrics WHERE dimension_type='category' GROUP BY platform ORDER BY month_amount DESC;"
+  },
+  {
+    "id": "q09",
+    "question": "京东血压计最新一天的日销售额是多少？",
+    "sql": "SELECT date, daily_amount FROM v_category_daily WHERE platform='京东' AND category='血压计' ORDER BY date DESC LIMIT 1;"
+  },
+  {
+    "id": "q10",
+    "question": "天猫血压计本月销售额是多少？",
+    "sql": "SELECT date, month_amount FROM v_category_daily WHERE platform='天猫' AND category='血压计' ORDER BY date DESC LIMIT 1;"
+  }
+]

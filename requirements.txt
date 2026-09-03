@@ -1,0 +1,17 @@
+# 智能问数系统依赖
+# 注意：torch / sentence-transformers 体积大且需 GPU，建议在服务器安装：
+#   pip install "torch>=2.3" -f https://download.pytorch.org/whl/cu121   # 或对应 CUDA 版本
+#   pip install sentence-transformers pymilvus "pymilvus>=2.6,<2.7" pyyaml
+# 本机仅装 pymilvus + pyyaml 即可做导入/语法校验。
+
+pymilvus>=2.6,<2.7
+sentence-transformers>=3.0
+torch>=2.3
+pyyaml>=6.0
+langgraph>=1.0
+requests>=2.31
+fastapi>=0.110
+uvicorn[standard]>=0.29
+httpx>=0.27
+streamlit>=1.36
+clickhouse-connect>=0.7    # 生产 ClickHouse 后端（HTTP 协议，纯 Python）；SQLite demo 模式不需要

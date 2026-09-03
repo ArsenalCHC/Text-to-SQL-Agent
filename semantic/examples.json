@@ -1,0 +1,22 @@
+[
+  {
+    "question": "天猫血压计本月进度是多少？",
+    "sql": "SELECT date, month_progress FROM v_category_daily WHERE platform='天猫' AND category='血压计' ORDER BY date DESC LIMIT 1;"
+  },
+  {
+    "question": "京东和天猫上月销售额对比",
+    "sql": "SELECT platform, SUM(month_amount) AS month_amount FROM daily_metrics WHERE dimension_type='category' GROUP BY platform;"
+  },
+  {
+    "question": "各平台昨日日销售额",
+    "sql": "SELECT platform, daily_amount FROM v_platform_summary WHERE date=(SELECT MAX(date) FROM daily_metrics);"
+  },
+  {
+    "question": "京东店铺自营和POP的月销售额分别是多少",
+    "sql": "SELECT store_type, SUM(month_amount) AS month_amount FROM v_store_daily WHERE platform='京东' GROUP BY store_type;"
+  },
+  {
+    "question": "拼多多本月总销售额",
+    "sql": "SELECT SUM(month_amount) AS total_month_amount FROM daily_metrics WHERE platform='拼多多';"
+  }
+]

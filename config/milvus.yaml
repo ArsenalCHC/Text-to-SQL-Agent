@@ -1,0 +1,27 @@
+# 智能问数 - Milvus 配置（部署目标：服务器，独立库，零影响生产业务库）
+milvus:
+  host: 127.0.0.1          # 服务器本机；跨机部署时改内网 IP，或用环境变量 MILVUS_HOST 覆盖
+  port: 19555              # gRPC 端口（生产已把 19530 映射为 19555）
+  database: text2sql_demo  # 独立库，与生产业务库物理隔离，互不干扰
+  timeout: 10
+
+embedding:
+  model: BAAI/bge-m3       # 默认模型名；服务器部署用 EMBED_MODEL 环境变量指向本地路径（见 scripts/setup_env.sh）
+  dim: 1024
+  device: auto             # 实际 GPU 由启动脚本的 CUDA_VISIBLE_DEVICES=4,5,6,7 限定（空闲卡）
+  batch_size: 32
+
+# 4 个检索集合：schema / metrics / glossary / examples
+collections:
+  schema:
+    name: text2sql_schema
+    desc: 统一事实表与视图的结构（字段名、含义、是否物化）
+  metrics:
+    name: text2sql_metrics
+    desc: 指标口径（月进度/年进度等，已物化到字段，LLM 只引用不发明公式）
+  glossary:
+    name: text2sql_glossary
+    desc: 业务口语 -> 字段/取值映射（血压计 -> category='血压计'）
+  examples:
+    name: text2sql_examples
+    desc: Few-shot 自然语言问法 -> 正确 SQL 样例

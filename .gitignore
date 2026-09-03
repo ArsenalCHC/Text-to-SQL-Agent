@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+.workbuddy
+*.iml
+*.swp
+
+# 数据（由 etl.sync 生成，不入库）
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+
+# 环境变量 / 本地配置（含部署环境变量，避免泄露服务器路径）
+.env
+*.local.yaml
+.env.*
+
+# 内部开发文档（含内部环境细节，不随仓库发布）
+docs/
+
+# 系统 / 日志
+.DS_Store
+Thumbs.db
+*.log
+nohup.out

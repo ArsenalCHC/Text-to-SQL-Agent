@@ -1,0 +1,57 @@
+# 智能问数系统 Docker 编排（可选部署路径，GPU 4-7 隔离）
+#
+# 说明：
+#   - 生产 Ollama 占 GPU0-3 / 11434，Milvus 业务库已在宿主机运行（9091 / 19555）
+#   - 本编排只起「独立 Ollama（GPU4-7 / 11435）+ API + UI」，Milvus 复用宿主机、零影响生产
+#   - 原生脚本（scripts/*.sh / run_api.py / run_ui.py）是主线，本文件是容器化备选
+#
+# 用法：docker compose up -d
+# 前置：服务器已装 nvidia-container-toolkit
+version: "3.8"
+
+services:
+  # 1) GPU 4-7 独立 Ollama（物理隔离，不动生产实例）
+  ollama-t2s:
+    image: ollama/ollama:latest
+    container_name: ollama_t2s
+    environment:
+      - CUDA_VISIBLE_DEVICES=4,5,6,7
+    ports:
+      - "11435:11434"                      # 对外 11435（与生产 11434 区分）
+    volumes:
+      - /data/ollama_t2s:/root/.ollama     # 独立模型目录
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["4", "5", "6", "7"]
+              capabilities: [gpu]
+    restart: unless-stopped
+
+  # 2) FastAPI 服务（复用宿主机 Milvus，host 网络便于直连 127.0.0.1:19555）
+  api:
+    build: .
+    container_name: qa_api
+    network_mode: host                     # 同机直连 Milvus(19555) + Ollama(11435)
+    environment:
+      - MILVUS_HOST=127.0.0.1
+      - MILVUS_PORT=19555
+      - OLLAMA_BASE_URL=http://127.0.0.1:11435/v1
+      - DB_PATH=/app/data/ecommerce_daily.db
+    command: python scripts/run_api.py --host 0.0.0.0 --port 8000
+    depends_on:
+      - ollama-t2s
+    restart: unless-stopped
+
+  # 3) Streamlit UI
+  ui:
+    build: .
+    container_name: qa_ui
+    network_mode: host
+    environment:
+      - DB_PATH=/app/data/ecommerce_daily.db
+    command: python scripts/run_ui.py --port 8501
+    depends_on:
+      - api
+    restart: unless-stopped

@@ -1,0 +1,19 @@
+# LLM 配置 —— 服务器上 GPU 4-7 的独立 Ollama 实例
+#
+# 关键隔离设计：生产 Ollama 占 GPU 0-3、监听 11434；
+# 我们在 GPU 4-7 起第二个 Ollama 实例、监听 11435，互不干扰：
+#   CUDA_VISIBLE_DEVICES=4,5,6,7 OLLAMA_HOST=0.0.0.0:11435 OLLAMA_MODELS=<独立模型目录> ollama serve
+#   OLLAMA_HOST=127.0.0.1:11435 ollama pull qwen3.5:27b
+llm:
+  provider: ollama
+  base_url: http://127.0.0.1:11435/v1     # OpenAI 兼容端点（11435 = GPU4-7 独立实例）
+  model: qwen3.5:27b
+  temperature: 0.0                          # SQL 生成要确定性，不要发散
+  reasoning_effort: none                    # 关闭 qwen3.5 思考链：none=关闭(快+干净)；high/medium/low=开启(更准但慢，且可能污染 content)
+  max_tokens: 1024
+  timeout: 120
+
+agent:
+  max_repair: 2          # SQL 校验失败后最多自修复重试次数（Day4 已加 EXPLAIN 预演）
+  row_limit: 200         # 查询返回行数上限（防大结果集拖垮前端）
+  enable_narrative: true # 是否让 LLM 做自然语言解读（数字仍以表格为准；false 时纯表格直出）
