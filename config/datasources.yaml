@@ -7,8 +7,6 @@
 # mock: true  -> 走本地模拟数据（mock_data.py），零网络依赖，适合离线演示 / 面试
 # mock: false -> 走真实 HTTP 接口（etl/sync.py 的 _fetch_http），接入生产数据
 #
-# 注意：以下 url 指向公司内网网关 10.21.0.176:8080，服务器须能访问该网段；
-#       若 git 上传仓库，本文件含内网 IP 与接口 UUID，需自行评估是否脱敏。
 mock: false
 date_format: "%Y%m%d"   # 接口日期参数格式（请求侧）；库内 date 列仍存 ISO "%Y-%m-%d"
 
@@ -17,7 +15,7 @@ sources:
   - name: tmall_category
     platform: 天猫
     dimension_type: category
-    url: http://10.21.0.176:8080/webroot/service/publish/1ba7e1bf-3b01-47ba-b26a-751bcdaf36ef/category
+    url: http://ip:port/webroot/service/publish/1ba7e1bf-3b01-47ba-b26a-751bcdaf36ef/category
     method: GET
     params: [start_date, end_date]
     field_map:
@@ -38,7 +36,7 @@ sources:
   - name: tmall_store
     platform: 天猫
     dimension_type: store
-    url: http://10.21.0.176:8080/webroot/service/publish/1ba7e1bf-3b01-47ba-b26a-751bcdaf36ef/zddp/daily
+    url: http://ip:port/webroot/service/publish/1ba7e1bf-3b01-47ba-b26a-751bcdaf36ef/zddp/daily
     method: GET
     params: [start_date, end_date]
     field_map:
@@ -56,7 +54,7 @@ sources:
   - name: jd_category
     platform: 京东
     dimension_type: category
-    url: http://10.21.0.176:8080/webroot/service/publish/4dd35a51-7faf-47ec-a853-8d3bee9da2c4/jd/category
+    url: http://ip:port/webroot/service/publish/4dd35a51-7faf-47ec-a853-8d3bee9da2c4/jd/category
     method: GET
     params: [start_date, end_date]
     field_map:
@@ -75,7 +73,7 @@ sources:
   - name: jd_store
     platform: 京东
     dimension_type: store
-    url: http://10.21.0.176:8080/webroot/service/publish/4dd35a51-7faf-47ec-a853-8d3bee9da2c4/jd/store
+    url: http://ip:port/webroot/service/publish/4dd35a51-7faf-47ec-a853-8d3bee9da2c4/jd/store
     method: GET
     params: [start_date, end_date]
     field_map:
@@ -94,7 +92,7 @@ sources:
   - name: pdd_category
     platform: 拼多多
     dimension_type: category
-    url: http://10.21.0.176:8080/webroot/service/publish/c8eecf39-08be-4e96-9589-23e803a2ef55/pdd/category
+    url: http://ip:port/webroot/service/publish/c8eecf39-08be-4e96-9589-23e803a2ef55/pdd/category
     method: GET
     params: [start_date, end_date]
     field_map:
@@ -115,7 +113,7 @@ sources:
   - name: pdd_store
     platform: 拼多多
     dimension_type: store
-    url: http://10.21.0.176:8080/webroot/service/publish/c8eecf39-08be-4e96-9589-23e803a2ef55/pdd/zddp
+    url: http://ip:port/webroot/service/publish/c8eecf39-08be-4e96-9589-23e803a2ef55/pdd/zddp
     method: GET
     params: [start_date, end_date]
     field_map:
