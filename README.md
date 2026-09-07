@@ -41,7 +41,7 @@
 
 ## 效果演示
 
-![演示](assets/linux部署.png)
+![演示](assets/demo1.png)
 
 ---
 
