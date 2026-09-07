@@ -43,7 +43,7 @@
 
 > 替换为你自己的一次真实问答截图或 GIF（如：提问"天猫血压计本月进度是多少？" → 返回表格 + 关键数字）。截图放到 `assets/demo.png`。
 
-![演示](assets/demo.png)
+![演示](assets/linux部署.png)
 
 ---
 
